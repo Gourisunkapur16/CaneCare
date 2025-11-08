@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>CaneSight AI - Dashboard</title>
+    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='css/style.css') }}\">
+</head>
+<body>
+    <div class=\"container\">
+        <header class=\"app-header\">
+            <h1>🌾 CaneSight AI</h1>
+            <p class=\"tagline\">See Beyond the Leaf. Predict Your Yield.</p>
+        </header>
+
+        <div class=\"dashboard-grid\">
+            <div class=\"card main-action\">
+                <h2>🔍 New Smart Scan</h2>
+                <p>Get comprehensive analysis of your sugarcane crop health with our AI-powered multi-angle scan</p>
+                <a href=\"/scan\" class=\"btn btn-primary\">Start Smart Scan</a>
+            </div>
+
+            <div class=\"card\">
+                <h3>📊 Field Health Overview</h3>
+                <div class=\"health-score\">
+                    <div class=\"score-circle\">
+                        <span class=\"score\">--</span>
+                        <span class=\"label\">Cane Health Score</span>
+                    </div>
+                </div>
+                <p class=\"info-text\">Complete your first scan to see your field health score</p>
+            </div>
+
+            <div class=\"card\">
+                <h3>🚨 Community Alert</h3>
+                <div class=\"alert-warning\">
+                    <strong>Red Rot</strong> activity reported in your area
+                </div>
+                <p>Recent scans show increased disease presence nearby</p>
+                <button class=\"btn btn-secondary\" onclick=\"viewHeatmap()\">View Regional Heatmap</button>
+            </div>
+
+            <div class=\"card\">
+                <h3>⚡ Quick Actions</h3>
+                <div class=\"action-buttons\">
+                    <button class=\"btn btn-outline\" onclick=\"showFeature('history')\">Field History</button>
+                    <button class=\"btn btn-outline\" onclick=\"showFeature('guide')\">Treatment Guide</button>
+                    <button class=\"btn btn-outline\" onclick=\"showFeature('market')\">Market Prices</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function viewHeatmap() {
+            alert('Community heatmap feature would open here showing disease hotspots in your region.');
+        }
+
+        function showFeature(feature) {
+            const features = {
+                'history': 'Field history tracking - coming soon!',
+                'guide': 'Comprehensive treatment guide - coming soon!',
+                'market': 'Live market prices - coming soon!'
+            };
+            alert(features[feature]);
+        }
+    </script>
+</body>
+</html>

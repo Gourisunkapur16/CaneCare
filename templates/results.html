@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>Analysis Results - CaneSight AI</title>
+    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='css/style.css') }}\">
+</head>
+<body>
+    <div class=\"container\">
+        <header class=\"app-header\">
+            <h1>📊 Analysis Results</h1>
+            <p class=\"tagline\">Comprehensive crop health report</p>
+        </header>
+
+        <div class=\"results-container\">
+            <div class=\"card health-banner\">
+                <div class=\"health-score-large\">
+                    <div class=\"score-circle-large\">
+                        <span class=\"score\">{{ health_score }}</span>
+                        <span class=\"label\">Cane Health Score</span>
+                    </div>
+                    <div class=\"health-status\">
+                        {% if health_score >= 80 %}
+                        <span class=\"status-excellent\">Excellent 🌟</span>
+                        {% elif health_score >= 60 %}
+                        <span class=\"status-good\">Good 👍</span>
+                        {% elif health_score >= 40 %}
+                        <span class=\"status-warning\">Needs Attention ⚠️</span>
+                        {% else %}
+                        <span class=\"status-critical\">Critical 🚨</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class=\"card\">
+                <h3>🔍 Disease Diagnosis</h3>
+                <div class=\"diagnosis-result\">
+                    <div class=\"disease-name {{ analysis.disease }}\">
+                        {{ analysis.disease_name }}
+                    </div>
+                    <div class=\"confidence\">
+                        Confidence: {{ analysis.confidence }}%
+                    </div>
+                    <div class=\"severity\">
+                        Severity: {{ analysis.affected_area }} affected
+                    </div>
+                </div>
+            </div>
+
+            <div class=\"card\">
+                <h3>📈 Quality Assessment</h3>
+                <div class=\"quality-metrics\">
+                    <div class=\"metric\">
+                        <span class=\"metric-label\">Estimated Brix Level</span>
+                        <span class=\"metric-value\">{{ analysis.brix_level }}°</span>
+                        <span class=\"metric-comparison\">
+                            {% if analysis.brix_level >= 18 %}
+                            Excellent sugar content ✅
+                            {% elif analysis.brix_level >= 16 %}
+                            Good sugar content 👍
+                            {% else %}
+                            Low sugar content ⚠️
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class=\"card financial-impact\">
+                <h3>💰 Financial Impact</h3>
+                <div class=\"impact-metrics\">
+                    <div class=\"impact-metric\">
+                        <span class=\"impact-label\">Yield Impact</span>
+                        <span class=\"impact-value negative\">-{{ 100 - health_score }}%</span>
+                    </div>
+                    <div class=\"impact-metric\">
+                        <span class=\"impact-label\">Revenue Risk</span>
+                        <span class=\"impact-value negative\">₹{{ ((70 * 3000 * (100 - health_score)) / 100)|int }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class=\"card treatment-plan\">
+                <h3>💊 Recommended Action Plan</h3>
+                <div class=\"plan-steps\">
+                    <div class=\"plan-step immediate\">
+                        <h4>🟢 Immediate Actions (Within 24 hours)</h4>
+                        <ul>
+                            <li>Remove visibly infected plants from field</li>
+                            <li>Isolate the affected area with markers</li>
+                        </ul>
+                    </div>
+                    <div class=\"plan-step short-term\">
+                        <h4>🟡 Short-term (Next 3-7 days)</h4>
+                        <ul>
+                            <li>Apply recommended fungicide treatment</li>
+                            <li>Monitor surrounding plants daily</li>
+                        </ul>
+                    </div>
+                    <div class=\"plan-step long-term\">
+                        <h4>🔵 Long-term Prevention</h4>
+                        <ul>
+                            <li>Consider crop rotation next season</li>
+                            <li>Use disease-resistant varieties</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=\"action-buttons-center\">
+            <a href=\"/scan\" class=\"btn btn-primary\">New Scan</a>
+            <a href=\"/\" class=\"btn btn-outline\">Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
