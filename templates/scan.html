@@ -1,110 +1,88 @@
 ﻿<!DOCTYPE html>
-<html lang=\"en\">
+<html>
 <head>
-    <meta charset=\"UTF-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-    <title>Smart Scan - CaneSight AI</title>
-    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='css/style.css') }}\">
+    <title>Scan - CaneSight AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class=\"container\">
-        <header class=\"app-header\">
-            <h1>📷 Smart Scan</h1>
-            <p class=\"tagline\">Multi-angle analysis for accurate results</p>
+    <div class="container">
+        <header>
+            <h1>📸 Scan Image</h1>
+            <p>Upload an image for {{ mode }} analysis</p>
         </header>
 
-        <form id=\"scanForm\" action=\"/analyze\" method=\"post\" enctype=\"multipart/form-data\">
-            <div class=\"card\">
-                <h3>🏭 Farm Context</h3>
-                <p class=\"info-text\">Provide context for better AI analysis</p>
+        <div class="scan-container">
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="hidden" name="mode" value="{{ mode }}">
                 
-                <div class=\"form-group\">
-                    <label for=\"soil_type\">Soil Type:</label>
-                    <select id=\"soil_type\" name=\"soil_type\" required>
-                        <option value=\"loam\">Loam (Best for sugarcane)</option>
-                        <option value=\"clay\">Clay</option>
-                        <option value=\"sandy\">Sandy</option>
-                    </select>
+                <div class="upload-area" id="uploadArea">
+                    <h3>📁 Drag & Drop or Click to Upload</h3>
+                    <p>Supported formats: JPG, PNG, GIF, BMP</p>
+                    <input type="file" name="image" id="fileInput" accept="image/*" required>
                 </div>
                 
-                <div class=\"form-group\">
-                    <label for=\"cane_variety\">Cane Variety:</label>
-                    <select id=\"cane_variety\" name=\"cane_variety\" required>
-                        <option value=\"co_86032\">CO 86032 (High yield)</option>
-                        <option value=\"co_0238\">CO 0238 (Disease resistant)</option>
-                        <option value=\"co_0118\">CO 0118 (Early maturing)</option>
-                    </select>
-                </div>
+                <div class="preview" id="preview"></div>
+                
+                <button type="submit" class="btn process-btn">🔍 Process Image</button>
+            </form>
+            
+            <div class="mode-info">
+                <h3>Mode: {{ mode|title }}</h3>
+                <p>
+                    {% if mode == 'text' %}
+                    This mode will extract and read any text found in the image.
+                    {% elif mode == 'object' %}
+                    This mode detects objects and obstacles in the image.
+                    {% elif mode == 'currency' %}
+                    This mode identifies currency denominations.
+                    {% elif mode == 'color' %}
+                    This mode detects dominant colors in the image.
+                    {% endif %}
+                </p>
             </div>
-
-            <div class=\"card\">
-                <h3>🌿 Capture Images</h3>
-                <p class=\"info-text\">Follow our multi-angle guide for best results</p>
-                
-                <div class=\"scan-guide\">
-                    <div class=\"guide-step\">
-                        <span class=\"step-number\">1</span>
-                        <div class=\"step-content\">
-                            <strong>Leaf Top View</strong>
-                            <p>Capture the top surface of leaves</p>
-                        </div>
-                    </div>
-                    <div class=\"guide-step\">
-                        <span class=\"step-number\">2</span>
-                        <div class=\"step-content\">
-                            <strong>Leaf Bottom View</strong>
-                            <p>Many diseases show symptoms underneath</p>
-                        </div>
-                    </div>
-                    <div class=\"guide-step\">
-                        <span class=\"step-number\">3</span>
-                        <div class=\"step-content\">
-                            <strong>Stalk Close-up</strong>
-                            <p>Focus on stalk nodes and internodes</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class=\"upload-area\">
-                    <input type=\"file\" id=\"fileInput\" name=\"file\" accept=\"image/*\" required>
-                    <label for=\"fileInput\" class=\"upload-label\">
-                        <span class=\"upload-icon\">📸</span>
-                        <span class=\"upload-text\">Tap to Capture Image</span>
-                        <span class=\"upload-hint\">or choose from gallery</span>
-                    </label>
-                </div>
-
-                <div id=\"imagePreview\" class=\"image-preview\"></div>
-            </div>
-
-            <button type=\"submit\" class=\"btn btn-primary btn-large\">
-                🧠 Analyze with AI
-            </button>
-        </form>
-
-        <a href=\"/\" class=\"btn btn-outline\" style=\"margin-top: 20px;\">← Back to Dashboard</a>
+        </div>
+        
+        <a href="{{ url_for('home') }}" class="btn back-btn">← Back to Home</a>
     </div>
 
     <script>
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('imagePreview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = \
-                        <div class=\"preview-container\">
-                            <img src=\"\\" alt=\"Preview\">
-                            <div class=\"preview-info\">Ready for analysis</div>
-                        </div>
-                    \;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.innerHTML = '';
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = 'rgba(255,255,255,0.2)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = 'rgba(255,255,255,0.1)';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = 'rgba(255,255,255,0.1)';
+            fileInput.files = e.dataTransfer.files;
+            showPreview(e.dataTransfer.files[0]);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                showPreview(e.target.files[0]);
             }
         });
+        
+        function showPreview(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 300px; border-radius: 10px; margin-top: 20px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 </body>
 </html>
